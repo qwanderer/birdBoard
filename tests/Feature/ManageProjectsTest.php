@@ -14,16 +14,17 @@ class ManageProjectsTest extends TestCase
     public function test_user_can_create_project()
     {
 
-        $this->withoutExceptionHandling(); // ларавель не будет перехватывать исключения - и мы их будем видеть
+        $this->withoutExceptionHandling();
 
         $this->signIn();
 
         $project_data = factory("App\Project")->raw(['user_id'=>auth()->user()->id]);
 
-        $this->post("/projects", $project_data)->assertRedirect('/projects');
+        $this->post("/projects", $project_data)->assertRedirect();
 
         $this->assertDatabaseHas("projects", $project_data);
-        $this->get('/projects')->assertSee($project_data['title']);
+        $this->get('/projects')
+            ->assertSee($project_data['title']);
 
     } // func
 
@@ -77,6 +78,17 @@ class ManageProjectsTest extends TestCase
         $this->get($project->urn())->assertStatus(403);
     }
 
+
+    public function test_user_can_update_project_notes()
+    {
+        $this->signIn();
+        $project = factory("App\Project")->create(['user_id'=>auth()->id()]);
+        $new_project_data = ['notes'=>"new notes"];
+
+        $this->patch($project->urn(), $new_project_data)
+            ->assertRedirect();
+        $this->assertDatabaseHas("projects", $new_project_data);
+    }
 } // class
 
 
