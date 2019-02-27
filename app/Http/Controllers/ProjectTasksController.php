@@ -26,12 +26,15 @@ class ProjectTasksController extends Controller
 
         $this->authorize("update", $task->project);
 
-        request()->validate(['body'=>"required|min:5"]);
+        $attributes = request()->validate(['body'=>"sometimes|min:5"]);
+        if(request()->has("completed")){
+            $attributes['completed'] = request("completed")=="on";
+        }else{
+            $attributes['completed'] = false;
+        }
 
-        $task->update([
-            'body'=>request("body"),
-            'completed'=>request()->has('completed')
-        ]);
+        $task->update($attributes);
+
         return redirect($project->urn());
     } // func
 

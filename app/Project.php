@@ -21,6 +21,12 @@ class Project extends Model
     }
 
 
+    public function activity()
+    {
+        return $this->hasMany(Activity::class);
+    }
+
+
     public function tasks()
     {
         return $this->hasMany(Task::class)->orderBy("updated_at", "DESC");

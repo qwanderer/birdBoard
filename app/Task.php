@@ -11,6 +11,10 @@ class Task extends Model
 
     protected $touches = ['project'];
 
+    protected $casts = [
+        'completed' => "boolean"
+    ];
+
 
 
     public function project()
@@ -23,5 +27,6 @@ class Task extends Model
     {
         return "/projects/{$this->project->id}/tasks/{$this->id}";
     }
+
 
 } // func
